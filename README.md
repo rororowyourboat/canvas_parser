@@ -53,6 +53,28 @@ with open("my_diagram.svg", "wb") as f:
     f.write(svg_bytes)
 ```
 
+## Self-Hosting Kroki (Private Diagrams)
+
+By default, `render_diagram()` sends diagram source to the **public** [kroki.io](https://kroki.io/) instance. If your `.canvas` files contain sensitive or proprietary content, you should self-host Kroki instead:
+
+```bash
+# Start a local Kroki instance
+docker run -d -p 8000:8000 yuzutech/kroki
+```
+
+Then pass the `base_url` parameter:
+
+```python
+svg_bytes = render_diagram(
+    d2_str,
+    diagram_type="d2",
+    output_format="svg",
+    base_url="http://localhost:8000",
+)
+```
+
+This keeps all diagram data on your own infrastructure while the library API stays identical.
+
 ## Setup Best Practices & Open Source Acknowledgements
 
 This project is open-source and benefits from the community!

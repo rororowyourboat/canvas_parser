@@ -55,8 +55,9 @@ def render_diagram(
     diagram_str: str,
     diagram_type: Literal["mermaid", "d2"],
     output_format: Literal["svg", "png", "pdf"] = "svg",
+    base_url: str = "https://kroki.io",
 ) -> bytes:
-    """Send a diagram to the public Kroki API and return rendered image bytes.
+    """Send a diagram to a Kroki API instance and return rendered image bytes.
 
     This is a convenience wrapper around :func:`encode_kroki_diagram` that
     builds the full Kroki URL, makes the HTTP request, and returns the
@@ -67,19 +68,18 @@ def render_diagram(
         diagram_type:  The rendering engine to use — ``"mermaid"`` or ``"d2"``.
         output_format: The desired output image type — ``"svg"``, ``"png"``,
                        or ``"pdf"``.  Defaults to ``"svg"``.
+        base_url:      The base URL of the Kroki instance.  Defaults to the
+                       public ``https://kroki.io``.  Set this to a self-hosted
+                       instance (e.g. ``http://localhost:8000``) when working
+                       with private or sensitive diagrams.
 
     Returns:
         The binary image data from the Kroki API response.
 
     Raises:
         RuntimeError: If the HTTP request to the Kroki API fails.
-
-    Note:
-        This function calls the **public** Kroki instance at
-        ``https://kroki.io``.  For production workloads, consider
-        self-hosting Kroki and modifying the URL.
     """
-    url = f"https://kroki.io/{diagram_type}/{output_format}"
+    url = f"{base_url.rstrip('/')}/{diagram_type}/{output_format}"
 
     payload = json.dumps({"diagram_source": diagram_str}).encode("utf-8")
 
