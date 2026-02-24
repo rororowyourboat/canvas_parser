@@ -1,7 +1,7 @@
 [project]
 name = "canvas-parser"
 version = "0.1.0"
-description = "Lightweight bridge between Obsidian JSON Canvas and declarative diagram languages (Mermaid, D2) with Kroki rendering."
+description = "Lightweight bridge between Obsidian JSON Canvas and declarative diagram languages (Mermaid, D2) with local rendering."
 readme = "README.md"
 license = "MIT"
 authors = [
@@ -9,6 +9,9 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = []
+
+[project.optional-dependencies]
+local = ["d2-python-wrapper"]
 
 [project.urls]
 Homepage = "https://github.com/rororowyourboat/canvas_parser"
