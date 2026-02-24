@@ -33,12 +33,25 @@ def _escape_mermaid_string(s: str) -> str:
     """Escape a string for safe use inside Mermaid node labels.
 
     Handles double-quotes (replaced with ``&quot;``), newlines (replaced
-    with ``<br>``), and truncates to 100 characters for readability.
+    with ``<br>``), square/round/curly brackets (HTML entities to prevent
+    Mermaid interpreting them as node shapes), and truncates to 100
+    characters for readability.
     """
     if not s:
         return ""
+    # Strip Obsidian-flavoured markdown that has no meaning in diagrams
+    s = s.replace("**", "")
+    s = s.replace("[[", "")
+    s = s.replace("]]", "")
+    # Replace pipe used in Obsidian wikilinks (display text separator)
+    s = s.replace("|", " - ")
     # Replace quotes that would break mermaid syntax
     s = s.replace('"', "&quot;")
+    # Replace brackets that Mermaid interprets as node-shape delimiters
+    s = s.replace("[", "&lsqb;")
+    s = s.replace("]", "&rsqb;")
+    s = s.replace("{", "&lbrace;")
+    s = s.replace("}", "&rbrace;")
     # Replace newlines with <br> for mermaid
     s = s.replace("\n", "<br>")
     # Max length truncation for readability
@@ -143,7 +156,7 @@ def _node_to_mermaid(node: Node) -> str:
     n_id = node.id
 
     if isinstance(node, TextNode):
-        label = _escape_mermaid_string(node.text)
+        label = _escape_mermaid_string(node.text) or " "
         return f'{n_id}("{label}")'  # Rounded rect
     elif isinstance(node, FileNode):
         label_parts = [node.file]
