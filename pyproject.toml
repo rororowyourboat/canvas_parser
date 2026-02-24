@@ -5,7 +5,7 @@ description = "Lightweight bridge between Obsidian JSON Canvas and declarative d
 readme = "README.md"
 license = "MIT"
 authors = [
-    { name = "Canvas Parser Contributors" }
+    { name = "rohan", email = "e4rohan@gmail.com" }
 ]
 requires-python = ">=3.10"
 dependencies = []
