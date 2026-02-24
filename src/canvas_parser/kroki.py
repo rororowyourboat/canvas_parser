@@ -25,6 +25,7 @@ Example::
 """
 
 import base64
+import json
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -78,11 +79,19 @@ def render_diagram(
         ``https://kroki.io``.  For production workloads, consider
         self-hosting Kroki and modifying the URL.
     """
-    encoded = encode_kroki_diagram(diagram_str)
+    url = f"https://kroki.io/{diagram_type}/{output_format}"
 
-    url = f"https://kroki.io/{diagram_type}/{output_format}/{encoded}"
+    payload = json.dumps({"diagram_source": diagram_str}).encode("utf-8")
 
-    req = urllib.request.Request(url, headers={"User-Agent": "canvas-parser-kroki-client/1.0"})
+    req = urllib.request.Request(
+        url,
+        data=payload,
+        headers={
+            "User-Agent": "canvas-parser-kroki-client/1.0",
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
 
     try:
         with urllib.request.urlopen(req) as response:
