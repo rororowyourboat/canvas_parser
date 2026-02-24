@@ -30,13 +30,26 @@ _VALID_DIRECTIONS = {"down", "right", "left", "up"}
 def _escape_d2_string(s: str) -> str:
     """Escape a string for safe use inside D2 quoted labels.
 
-    Handles double-quotes (backslash-escaped) and truncates to 100
-    characters for readability.  D2 natively supports newlines inside
-    quoted strings, so those are left as-is.
+    Handles backslashes (doubled to prevent escape sequences),
+    double-quotes (backslash-escaped), pipe characters (which D2 uses
+    for block strings), newlines (replaced with ``\\n`` literal), and
+    truncates to 100 characters for readability.
     """
     if not s:
         return ""
+    # Escape backslashes first so later replacements aren't doubled
+    s = s.replace("\\", "\\\\")
     s = s.replace('"', '\\"')
+    # D2 double-quoted strings cannot span lines — flatten newlines
+    s = s.replace("\n", "\\n")
+    # Strip Obsidian-flavoured markdown that has no meaning in diagrams
+    s = s.replace("**", "")
+    s = s.replace("[[", "")
+    s = s.replace("]]", "")
+    # Replace pipe used in Obsidian wikilinks (display text separator)
+    s = s.replace("|", " - ")
+    # Escape dollar signs — D2 treats ${ as substitution syntax
+    s = s.replace("$", "\\$")
 
     # Max length truncation for readability
     if len(s) > 100:
