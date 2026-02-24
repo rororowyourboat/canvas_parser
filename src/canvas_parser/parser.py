@@ -25,7 +25,6 @@ Example::
 
 import dataclasses
 import json
-
 from typing import Any, Type, TypeVar
 
 from .models import Canvas, Edge, FileNode, GroupNode, LinkNode, Node, TextNode
