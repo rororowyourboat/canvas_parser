@@ -1,0 +1,18 @@
+{
+    "nodes": [
+        {"id": "ui", "type": "group", "x": 0, "y": 0, "width": 400, "height": 250, "label": "Frontend"},
+        {"id": "react", "type": "text", "x": 20, "y": 30, "width": 160, "height": 60, "text": "React App"},
+        {"id": "tailwind", "type": "text", "x": 200, "y": 30, "width": 180, "height": 60, "text": "Tailwind CSS"},
+        {"id": "api", "type": "group", "x": 0, "y": 300, "width": 400, "height": 250, "label": "Backend"},
+        {"id": "fastapi", "type": "text", "x": 20, "y": 330, "width": 160, "height": 60, "text": "FastAPI"},
+        {"id": "postgres", "type": "file", "file": "db/schema.sql", "x": 200, "y": 330, "width": 180, "height": 60},
+        {"id": "docs", "type": "link", "url": "https://docs.example.com", "x": 500, "y": 150, "width": 200, "height": 60},
+        {"id": "redis", "type": "text", "x": 200, "y": 420, "width": 180, "height": 60, "text": "Redis Cache"}
+    ],
+    "edges": [
+        {"id": "e1", "fromNode": "react", "toNode": "fastapi", "fromSide": "bottom", "toSide": "top", "label": "REST API"},
+        {"id": "e2", "fromNode": "fastapi", "toNode": "postgres", "fromSide": "right", "toSide": "left", "label": "SQL"},
+        {"id": "e3", "fromNode": "fastapi", "toNode": "redis", "fromSide": "bottom", "toSide": "top"},
+        {"id": "e4", "fromNode": "fastapi", "toNode": "docs", "fromSide": "right", "toSide": "left", "toEnd": "none", "fromEnd": "none"}
+    ]
+}
