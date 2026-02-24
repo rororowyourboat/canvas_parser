@@ -10,6 +10,9 @@ authors = [
 requires-python = ">=3.10"
 dependencies = []
 
+[project.optional-dependencies]
+local = ["d2-python-wrapper"]
+
 [project.urls]
 Homepage = "https://github.com/rororowyourboat/canvas_parser"
 Repository = "https://github.com/rororowyourboat/canvas_parser"

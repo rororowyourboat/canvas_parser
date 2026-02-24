@@ -25,7 +25,7 @@ By keeping this utility in Python and dependency-free, it becomes highly **compl
 - **Parse JSON Canvas**: Extracts `TextNode`, `FileNode`, `LinkNode`, `GroupNode`, and standard `Edge` representations.
 - **Export to Mermaid**: Converts elements to Mermaid flowcharts with subgraphs.
 - **Export to D2**: Converts elements into modern D2 (`x -> y`) declarative syntax with implicit formatting.
-- **Render with Kroki**: Generates ready-to-use PNG/SVG bytes directly utilizing the public [Kroki API](https://kroki.io/) without any local binaries.
+- **Render locally or via Kroki**: Mermaid diagrams render client-side via mermaid.js (zero dependencies), D2 diagrams render locally via `d2-python-wrapper`, and [Kroki](https://kroki.io/) is available as an optional server-side fallback for both formats.
 
 ## Installation
 
@@ -53,16 +53,63 @@ with open("my_diagram.svg", "wb") as f:
     f.write(svg_bytes)
 ```
 
-## Self-Hosting Kroki (Private Diagrams)
+## Rendering Options
 
-By default, `render_diagram()` sends diagram source to the **public** [kroki.io](https://kroki.io/) instance. If your `.canvas` files contain sensitive or proprietary content, you should self-host Kroki instead:
+canvas\_parser supports three rendering backends. Choose the one that fits your privacy and dependency needs:
 
-```bash
-# Start a local Kroki instance
-docker run -d -p 8000:8000 yuzutech/kroki
+### 1. Mermaid — Client-Side (Recommended)
+
+Renders Mermaid diagrams in the browser via mermaid.js CDN. **No diagram data leaves the machine** — only the CDN script URL hits the network. Zero Python dependencies.
+
+```python
+from canvas_parser import to_mermaid, render_mermaid_html, parse_canvas
+
+canvas = parse_canvas("sample.canvas")
+html_str = render_mermaid_html(to_mermaid(canvas, "LR"))
+
+# Write to a file and open in a browser
+with open("diagram.html", "w") as f:
+    f.write(html_str)
+
+# Or use in a marimo notebook
+import marimo as mo
+mo.iframe(html_str)
 ```
 
-Then pass the `base_url` parameter:
+### 2. D2 — Local Binary
+
+Renders D2 diagrams locally using the `d2` binary (bundled via `d2-python-wrapper`). No network access required.
+
+```bash
+uv add "canvas-parser[local]"
+```
+
+```python
+from canvas_parser import to_d2, render_d2_local, parse_canvas
+
+canvas = parse_canvas("sample.canvas")
+svg_bytes = render_d2_local(to_d2(canvas), output_format="svg")
+
+with open("diagram.svg", "wb") as f:
+    f.write(svg_bytes)
+```
+
+### 3. Kroki — Server-Side Fallback
+
+Sends diagram source to a [Kroki](https://kroki.io/) instance (public or self-hosted) for rendering. Supports both Mermaid and D2.
+
+```python
+from canvas_parser import to_d2, render_diagram, parse_canvas
+
+canvas = parse_canvas("sample.canvas")
+svg_bytes = render_diagram(to_d2(canvas), diagram_type="d2", output_format="svg")
+```
+
+For private diagrams, self-host Kroki instead of using the public instance:
+
+```bash
+docker run -d -p 8000:8000 yuzutech/kroki
+```
 
 ```python
 svg_bytes = render_diagram(
@@ -72,8 +119,6 @@ svg_bytes = render_diagram(
     base_url="http://localhost:8000",
 )
 ```
-
-This keeps all diagram data on your own infrastructure while the library API stays identical.
 
 ## Setup Best Practices & Open Source Acknowledgements
 

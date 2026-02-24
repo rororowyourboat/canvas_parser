@@ -7,7 +7,10 @@ engines like `Kroki <https://kroki.io/>`_ understand.
 
 Quick start::
 
-    from canvas_parser import parse_canvas, to_mermaid, to_d2, render_diagram
+    from canvas_parser import (
+        parse_canvas, to_mermaid, to_d2,
+        render_diagram, render_mermaid_html, render_d2_local,
+    )
 
     canvas = parse_canvas("my_notes.canvas")
 
@@ -28,7 +31,7 @@ CI pipelines, static-site generators, or any Python automation.
 """
 
 from .d2 import to_d2
-from .kroki import encode_kroki_diagram, render_diagram
+from .kroki import encode_kroki_diagram, render_d2_local, render_diagram, render_mermaid_html
 from .mermaid import to_mermaid
 from .models import Canvas, Edge, FileNode, GroupNode, LinkNode, Node, TextNode
 from .parser import loads, parse_canvas
@@ -46,5 +49,7 @@ __all__ = [
     "to_mermaid",
     "to_d2",
     "render_diagram",
+    "render_mermaid_html",
+    "render_d2_local",
     "encode_kroki_diagram",
 ]
